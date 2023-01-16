@@ -1,0 +1,10 @@
+spring:
+  profiles: dev
+
+logging:
+  pattern:
+    console: "%d{yyyy-MM-dd'T'HH:mm:ss:SSS,SSSXXX, UTC-3} %-5level [%thread] %logger : %msg%n"
+  level:
+    org.springframework.web: DEBUG
+    org.hibernate: DEBUG
+    br.com.santander: DEBUG

@@ -1,0 +1,14 @@
+{
+	"notification": {
+		"User": "guila@newsafe.com.br",
+		"Pass": "3FCE169AEC5545E53D9E2F12E45A1FE5",
+		"Client": "27010",
+		"UserEmail": "bonabox_nao_responda@newsafe.com.br",
+		"PassEmail": "QEJDaWjhkh",
+		"HostEmail": "mail.newsafe.com.br",
+		"PortEmail": "587",
+		"ShortUrl": "https://cutt.ly/api/api.php",
+		"ShortUrlKey": "9d013fdfc1c839f3bae6fdfe42a7d53ce91f5",
+		"ThisServer": "localhost:8080"
+	}
+}

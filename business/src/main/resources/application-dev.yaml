@@ -1,0 +1,173 @@
+spring:
+  profiles: dev
+  jpa:
+    properties:
+      hibernate:
+        show_sql: true
+        dialect: org.hibernate.dialect.MySQL5Dialect
+  datasource:
+    url: "jdbc:mysql://database-commons.cgj8xeods5uo.us-east-2.rds.amazonaws.com:3306/db_box?serverTimezone=UTC"
+    username: "admin"
+    password: "jaE7Q5fpnbv01g5R3S"
+
+logging:
+  pattern:
+    console: "%d{yyyy-MM-dd'T'HH:mm:ss:SSS,SSSXXX, UTC-3} %-5level [%thread] %logger : %msg%n"
+  level:
+    org.springframework.web: DEBUG
+    org.hibernate: DEBUG
+    br.com.santander: DEBUG
+
+bonabox-interno:
+  server: "localhost:8081/interno-bonabox/api/v1"
+
+ip:
+  interno:
+    box: "http://localhost:"
+    bonabox: "http://localhost:"
+    condominio: "http://localhost:"
+    bonabox-validate: "http://localhost:"
+
+
+mfa:
+  mensagem:
+    admin:
+      condominio: "Seu código bonabox: %s"
+
+entrega:
+  mensagem:
+    entregador:
+      entrega: "Entrega realizada com sucesso em condominio %s, bloco %s, unidade %s em %t."
+    inquilino:
+      retirada: "Eii, tem encomenda te esperando. Para retirá-la siga as instruções abaixo:\n\nEmpresa entregadora: %s\nEntregador: %s\nData do depósito: %s\n\nVá até o local informado\nLocal: %s\nNome do box: %s\nLocalização do box: %s\n\nClique no link abaixo ou digite o código para retirar sua encomenda.\n\nObter QRCode: %s\n\nCódigo: %s\n\nAgradecemos sua atenção, até a próxima entrega!"
+    email:
+      admin: "lmjpaz@yahoo.com.br"
+    admin: "${telefones.admin}"
+  sessao:
+    ttl: 10
+    erro:
+      mensagem: "Tempo de criacao da entrega de ${entrega.sessao.ttl} minutos foi expirado."
+      codigo: 7001
+
+interno:
+  box:
+    server-port: 8081
+    api:
+      version: "v1"
+      root: "/interno-box/api/${interno.box.api.version}"
+    server: "http://${ip.interno.box}:${interno.box.server-port}${interno.box.api.root}"
+
+  bonabox:
+    server-port: 8082
+    api:
+      version: "v1"
+      root: "/interno-bonabox/api/${interno.bonabox.api.version}"
+    server: "http://${ip.interno.bonabox}:${interno.bonabox.server-port}${interno.bonabox.api.root}"
+    get:
+      resource: "/empresa-entrega"
+    resource:
+      entregador: "/entregador"
+
+  condominio:
+    server-port: 8083
+    api:
+      version: "v1"
+      root: "/interno-condominio/api/${interno.condominio.api.version}"
+      server: "http://${ip.interno.condominio}:${interno.condominio.server-port}${interno.condominio.api.root}"
+    resource:
+      pessoa: "/pessoa"
+      ala: "/ala"
+      bloco: "/bloco"
+      unidade: "/unidade"
+      condominio: "/condominio"
+
+  bonabox-validate:
+    server-port: 8084
+    api:
+      version: "v1"
+      root: "/interno-validate/api/${interno.bonabox-validate.api.version}"
+    server: "http://${ip.interno.bonabox-validate}:${interno.bonabox-validate.server-port}${interno.bonabox-validate.api.root}"
+
+externo:
+  notificacao:
+    server: "https://api.zenvia.com/v2/channels"
+    akna:
+      server: "https://app.akna.com.br/emkt/int/integracao.php"
+
+
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        registerHealthIndicator: true
+        slidingWindowType: COUNT_BASED
+        slidingWindowSize: 100
+        minimumNumberOfCalls: 100
+        failureRateThreshold: 80
+        slowCallDurationThreshold: 5000
+        slowCallRateThreshold: 80
+        eventConsumerBufferSize: 10
+        waitDurationInOpenState: 15s
+        permittedNumberOfCallsInHalfOpenState: 5
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+    instances:
+      sms:
+        baseConfig: default
+      validate:
+        baseConfig: default
+      condominio:
+        baseConfig: default
+      box:
+        baseConfig: default
+      bonabox:
+        baseConfig: default
+  retry:
+    configs:
+      default:
+        maxRetryAttempts: 1
+        waitDuration: 500
+    instances:
+      sms:
+        baseConfig: default
+      validate:
+        baseConfig: default
+      condominio:
+        baseConfig: default
+      box:
+        baseConfig: default
+      bonabox:
+        baseConfig: default
+
+  timelimiter:
+    configs:
+      default:
+        timeoutDuration: 5s
+        cancelRunningFuture: true
+    instances:
+      sms:
+        baseConfig: default
+      validate:
+        baseConfig: default
+      condominio:
+        baseConfig: default
+      box:
+        baseConfig: default
+      bonabox:
+        baseConfig: default
+
+  bulkhead:
+    configs:
+      default:
+        maxConcurrentCalls: 25
+        maxWaitDuration: 0
+    instances:
+      sms:
+        baseConfig: default
+      validate:
+        baseConfig: default
+      condominio:
+        baseConfig: default
+      box:
+        baseConfig: default
+      bonabox:
+        baseConfig: default
